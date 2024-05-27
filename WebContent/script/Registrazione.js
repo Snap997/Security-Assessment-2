@@ -10,13 +10,58 @@ function checkNomeCognome(inputtxt) {
 }
 
 
-function checkEmail(inputtxt) {
-	var email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-	if(inputtxt.value.match(email)) 
-		return true;
-	
-	return false;	
+function isValidEmail(email) {
+	// Controlla se la stringa è null o vuota
+	if (!email || typeof email !== 'string') return false;
+
+	// Controlla se l'email è troppo corta o troppo lunga
+	if (email.length < 5 || email.length > 254) return false;
+
+	// Controlla se l'email contiene solo un '@' e non ha caratteri proibiti
+	let atIndex = -1;
+	for (let i = 0; i < email.length; i++) {
+		const char = email[i];
+		if (char === '@') {
+			if (atIndex !== -1) return false; // più di un '@'
+			atIndex = i;
+		} else if (char === ' ' || char === '(' || char === ')' || char === ',' || char === ':' || char === ';' || char === '<' || char === '>' || char === '[' || char === ']' || char === '\\') {
+			return false; // caratteri non validi
+		}
+	}
+
+	// Se non c'è un '@', l'email non è valida
+	if (atIndex === -1) return false;
+
+	// Separazione locale e dominio
+	const localPart = email.slice(0, atIndex);
+	const domainPart = email.slice(atIndex + 1);
+
+	// Controlla se le parti locale e dominio non sono vuote e hanno lunghezza corretta
+	if (!localPart || !domainPart || localPart.length > 64 || domainPart.length > 253) return false;
+
+	// Controlla se il dominio contiene almeno un punto e non inizia o finisce con un punto
+	const domainParts = domainPart.split('.');
+	if (domainParts.length < 2 || domainParts[0] === '' || domainParts[domainParts.length - 1] === '') return false;
+
+	// Controlla se ciascuna parte del dominio contiene solo caratteri validi
+	const domainPartRegex = /^[A-Za-z0-9-]+$/;
+	for (let part of domainParts) {
+		if (!domainPartRegex.test(part) || part.startsWith('-') || part.endsWith('-')) {
+			return false;
+		}
+	}
+
+	// Controlla se la parte locale contiene solo caratteri validi
+	const localPartRegex = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]+$/;
+	if (!localPartRegex.test(localPart) || localPart.startsWith('.') || localPart.endsWith('.')) {
+		return false;
+	}
+
+	return true;
 }
+
+
+
 
 
 function checkData(inputtxt) {
