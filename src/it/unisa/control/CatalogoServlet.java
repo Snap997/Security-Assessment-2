@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import it.unisa.SanitizerWrapper;
+import it.unisa.Security;
 import it.unisa.model.ProdottoBean;
 import it.unisa.model.ProdottoDao;
 
@@ -19,15 +21,17 @@ import it.unisa.model.ProdottoDao;
 public class CatalogoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doGet(HttpServletRequest UnsanitaizedRequest, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		SanitizerWrapper request = new SanitizerWrapper(UnsanitaizedRequest);
 
 		ProdottoDao prodDao = new ProdottoDao();
 		ProdottoBean bean = new ProdottoBean();
 		String sort = request.getParameter("sort");
 		String action = request.getParameter("action");
 		String redirectedPage = request.getParameter("page");;
-	
+
 		try {
 			if(action!=null) {
 				if(action.equalsIgnoreCase("add")) {
