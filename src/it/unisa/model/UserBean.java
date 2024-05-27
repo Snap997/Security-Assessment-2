@@ -98,7 +98,15 @@ public class UserBean implements Serializable {
 	public void setValid(boolean valid) {
 		this.valid = valid;
 	}
-	
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
 	private String nome;
 	private String cognome;
 	private String username;
@@ -110,4 +118,5 @@ public class UserBean implements Serializable {
 	private String cap;
 	private boolean amministratore;
 	private boolean valid;
+	private String salt;
 }

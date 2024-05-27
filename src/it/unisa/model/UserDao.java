@@ -39,7 +39,7 @@ public class UserDao implements UserDaoInterfaccia {
 		PreparedStatement preparedStatement = null;
 
 		String insertSQL = "INSERT INTO " + UserDao.TABLE_NAME 
-						+ " (NOME, COGNOME, USERNAME, PWD, EMAIL, DATA_NASCITA, CARTA_CREDITO, INDIRIZZO, CAP, AMMINISTRATORE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+						+ " (NOME, COGNOME, USERNAME, PWD, EMAIL, DATA_NASCITA, CARTA_CREDITO, INDIRIZZO, CAP, AMMINISTRATORE, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 		
 		try {
 			connection = ds.getConnection();
@@ -55,7 +55,7 @@ public class UserDao implements UserDaoInterfaccia {
 			preparedStatement.setString(8, user.getIndirizzo());
 			preparedStatement.setString(9, user.getCap());
 			preparedStatement.setBoolean(10, user.isAmministratore());
-		
+			preparedStatement.setString(11, user.getSalt());
 			preparedStatement.executeUpdate();
 
 			connection.commit();

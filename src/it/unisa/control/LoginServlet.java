@@ -1,6 +1,7 @@
 package it.unisa.control;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import it.unisa.PasswordHashing;
 import it.unisa.model.*;
 
 /**
@@ -27,15 +29,21 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 	UserDao usDao = new UserDao();
+
+
 		
 		try
-		{	    
-
-		     UserBean user = new UserBean();
-		     user.setUsername(request.getParameter("un"));
-		     user.setPassword(request.getParameter("pw"));
-		     user = usDao.doRetrieve(request.getParameter("un"),request.getParameter("pw"));
-			   		    
+		{
+		     UserBean user =  usDao.doRetrieve(request.getParameter("email"));
+			try {
+				String hashedPassword = PasswordHashing.hashPassword(request.getParameter("pw"), user.getSalt());
+				if(!hashedPassword.equals(user.getPassword())){
+					response.sendRedirect(request.getContextPath() +"/Login.jsp?action=error"); //error page
+					return;
+				}
+			} catch (NoSuchAlgorithmException e) {
+				throw new Exception("Failed to hash the password");
+			}
 		    
 		     String checkout = request.getParameter("checkout");
 		     
@@ -56,7 +64,7 @@ public class LoginServlet extends HttpServlet {
 		} 
 				
 				
-		catch(SQLException e) {
+		catch(Exception e) {
 			System.out.println("Error:" + e.getMessage());
 		}
 		  }

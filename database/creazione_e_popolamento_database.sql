@@ -35,6 +35,7 @@ CREATE TABLE `cliente` (
   `carta_credito` varchar(16) DEFAULT NULL,
   `indirizzo` varchar(100) DEFAULT NULL,
   `cap` varchar(100) DEFAULT NULL,
+  `salt` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`email`),
   KEY `carta_credito` (`carta_credito`),
   KEY `indirizzo` (`indirizzo`,`cap`),
